@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import data from "../assets/data";
+import { menuContext } from "../context/menuContext";
+import { cartContext } from "../context/cartContext";
 
-function Cart({ menu, cart, setCart }) {
+function Cart() {
+  const { menu } = useContext(menuContext);
+  const { cart } = useContext(cartContext);
   if (!menu)
     return (
       <div style={{ textAlign: "center", margin: "80px" }}>
@@ -19,8 +24,6 @@ function Cart({ menu, cart, setCart }) {
               item={allMenus.find((menu) => menu.id === el.id)}
               options={el.options}
               quantity={el.quantity}
-              cart={cart}
-              setCart={setCart}
             />
           ))
         ) : (
@@ -31,7 +34,8 @@ function Cart({ menu, cart, setCart }) {
   );
 }
 
-function CartItem({ item, options, quantity, cart, setCart }) {
+function CartItem({ item, options, quantity }) {
+  const { cart, setCart } = useContext(cartContext);
   return (
     <li className="cart-item">
       <div className="cart-item-info">
@@ -39,13 +43,14 @@ function CartItem({ item, options, quantity, cart, setCart }) {
         <div>{item.name}</div>
       </div>
       <div className="cart-item-option">
-        {Object.keys(options).map((el) => (
-          <div key={el.id}>
+        {Object.keys(options).map((el, index) => (
+          <div key={`${el}-${index}`}>
             {el} : {data.options[el][options[el]]}
           </div>
         ))}
         <div>개수 : {quantity}</div>
       </div>
+
       <button
         className="cart-item-delete"
         onClick={() => {
